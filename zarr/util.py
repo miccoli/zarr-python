@@ -42,6 +42,12 @@ class NumberEncoder(json.JSONEncoder):
             return int(o)
         if isinstance(o, numbers.Real):
             return float(o)
+        # hdf5 attributes can be arrays, which h5py renders as np.ndarray
+        if isinstance(o, np.ndarray):
+            return o.tolist()
+        # this is for encoding numpy.bytes_
+        if isinstance(o, bytes):
+            return o.decode()
         return json.JSONEncoder.default(self, o)
 
 
